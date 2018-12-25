@@ -4,40 +4,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-ArrayList<User> users = new ArrayList<>();
-private List<Account> userAccos;
-protected String name;
-protected String phonenumber;
-protected int id=9999999;
 
-public User(){
-    userAccos=new ArrayList<>();
-    phonenumber="000 000 0000";
-    name = "Matti Meikäläinen";
-}
+    public ArrayList<Account> userAccos= new ArrayList<>();
 
-public User(String n, int ID, String phone) {
-    name = n;
-    id = ID;
-    phonenumber = phone;
-}
+    protected String name;
+    protected String phonenumber;
+    public int id;
+    public ArrayList<String> userAccoNums = new ArrayList<String>();
 
-public void setName(String n){ name=n;}
+    public User() {
+        userAccos = new ArrayList<>();
+        phonenumber = "000 000 0000";
+        name = "Name";
+    }
 
-public String getName() { System.out.println("User name: "+name);return name; }
+    public User(String n, String phone, int userID) {
+        name = n;
+        phonenumber = phone;
+        id = userID;
+    }
 
-public String getPhonenumber(){System.out.println("Phone number: "+ phonenumber);return phonenumber; }
+    public void setName(String n) {
+        name = n;
+    }
 
-public void setPhonenumber(String p){phonenumber=p;}
+    public String getName() {
+        System.out.println("getName method used, name is: " + name);
+        return name;
+    }
 
-public int getId(){ System.out.println("User id: "+id);return id; }
+    public String getPhonenumber() {
+        System.out.println("Phone number: " + phonenumber);
+        return phonenumber;
+    }
 
+    public void setPhonenumber(String p) {
+        phonenumber = p;
+    }
 
-public String getUserAccos(int userID) {
-    for(User user : users) {
-        if (user.id == userID){
-            return (user.name+" account(s): "+userAccos);
-        }
-    }return "User doesn't have any accounts";
+    public int getId() {
+        return this.id;
+    }
+
+    public ArrayList getAccounts() {
+        System.out.println("---------User accounts: "+userAccos);
+    return userAccos;
     }
 }
+
+
+

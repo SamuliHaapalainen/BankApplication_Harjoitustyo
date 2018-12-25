@@ -1,16 +1,20 @@
 package com.example.samuli.bankapplication;
 
 
+import java.util.ArrayList;
+
 public abstract class Account {
-    protected String acconumber;
-    protected int money;
-    protected int userID;
-    protected int seq = 88888888;
+    public String acconumber;
+    public int money;
+    public int userID;
+    public int seq = 88888888;
+    //Here is list for transactions:
+    ArrayList <Transaction> taList = new ArrayList<>();
 
 
     public Account(int ID, int a) {
-        seq=-1;
         acconumber="FI"+seq;
+        seq=-1;
         money = a;
         userID=ID;
 
@@ -21,6 +25,8 @@ public abstract class Account {
         return acconumber;
     }
 
+    public int getMoney(){ return this.money; }
+
     public void print() {
         System.out.println("Account number: " + acconumber + " Money: " + money);
     }
@@ -29,6 +35,10 @@ public abstract class Account {
         if(money + z > 0) {
             money += z;
         }
+    }
+
+    public int getUserID(){
+        return this.userID;
     }
 }
 

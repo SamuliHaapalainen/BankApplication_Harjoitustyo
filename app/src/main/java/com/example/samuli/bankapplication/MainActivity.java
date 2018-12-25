@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 try{
                     refreshBtn.setVisibility(View.VISIBLE);
                     userIDMain=new Integer(userIDStr).intValue();
-                    bk.setUser(userIDMain);
+                    bk.setUser(userIDMain); //setting the current user
                     chooseFunction.setVisibility(View.VISIBLE);
                     currentUser.setText("Signed in with: "+bk.getUserName(userIDMain)+"\nUser ID:"+userIDMain);
                     SIbtn.setVisibility(View.INVISIBLE);
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         accountSP.setAdapter(adapter1);
 
 
-
+        //defining Sign-out button's functionality
         SObtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
                     textField.setVisibility(View.VISIBLE);
-                    textField.setHint("Type the account you want to transfer");
+                    textField.setHint("Type the account you want transfer to");
                     genBtn.setText("Transfer");
                     editText.setVisibility(View.VISIBLE);
                     editText.setHint("How much money you want to transfer");

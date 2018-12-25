@@ -25,6 +25,7 @@ public class Bank {
     int money=0;
     //list for accoToSP spinner
     ArrayList accoNumsBank;
+    //Initializing current user of a Bank
     User currentUser=new User();
 
 

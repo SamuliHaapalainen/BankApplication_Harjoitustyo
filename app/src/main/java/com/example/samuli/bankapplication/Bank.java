@@ -5,8 +5,11 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Bank {
+    //bank's list for all the accounts
     public ArrayList<Account> accos;
+    //bank's list for all the users
     public ArrayList<User> users;
+    //list for acooSP spinner
     public ArrayList<String> userAccoNums;
     protected int bankid=9999999;
     public int seq = 88888888;
@@ -20,7 +23,9 @@ public class Bank {
         return bk;
     }
     int money=0;
-    ArrayList helpList;
+    //list for accoToSP spinner
+    ArrayList accoNumsBank;
+    User currentUser=new User();
 
 
 
@@ -29,12 +34,20 @@ public class Bank {
         accos = new ArrayList<Account>();
         users =new ArrayList<User>();
         userAccoNums = new ArrayList<String>();
-        helpList = new ArrayList<String>();
+        accoNumsBank=new ArrayList<String>();
 
         users.add(0,new User("Petri Pekkanen", "0500055550",9999999));
         users.add(1,new User("Kalle Palander", "0455400054",9999998));
         users.add(2,new User("Jorma Ollila", "0505556666",9999997));
         users.add(3,new User("Jaska Jokunen", "0449987894",9999996));
+    }
+
+    public void setUser(int id){
+        for(User u : bk.users){
+            if (u.getId()==id){
+                this.currentUser = u;
+            }
+        }
     }
 
 
@@ -49,15 +62,17 @@ public class Bank {
 
 
 
+
     public String addNormalAcco(int userID) {
         NormalAccount nacco = new NormalAccount(userID, money);
         nacco.acconumber = "FI" + seq;
         seq -= 1;
+        accoNumsBank.add(nacco);
+        accos.add(nacco);
         for (User u : users) {
             System.out.println("***********get ID***********" + u.getId());
             if (u.getId()==userID) {
                 u.userAccos.add(nacco);
-                accos.add(nacco);
                 u.userAccoNums.add(nacco.getNumber());
                 System.out.println("Tulostus getID:" + u.getId());
             }
@@ -72,13 +87,7 @@ public class Bank {
         }return x;
         }
 
-    public ArrayList getUserAccoNums(int userID) {
-        for(User user : users) {
-            if (user.id == userID){
-                helpList=user.userAccoNums;
-            }
-        }return helpList;
-    }
+
 
 
 
@@ -105,12 +114,12 @@ public class Bank {
         }
     }
 
-    /*public void printAll() {
+    public void printAllAccos() {
         System.out.println("All accounts:");
         for(Account account : accos) {
             account.print();
         }
-    }*/
+    }
 
     public String deposit(String acconumber, int money) {
         for (Account account : accos) {
@@ -127,7 +136,7 @@ public class Bank {
     public String accountTransfer(String acconumberFrom, String acconumberTo, int money){
         for(Account account : accos){
             if(account.getNumber().equals(acconumberFrom)){
-                cardPayment(acconumberFrom, money);
+                withdraw(acconumberFrom, money);
                 deposit(acconumberTo,money);
             }
             Transaction ta = new Transaction(money, "Transfer", acconumberFrom, acconumberTo);
@@ -137,15 +146,15 @@ public class Bank {
         return "Money transfered "+money+"€ from "+acconumberFrom+"\nto "+acconumberTo;
     }
 
-    public String cardPayment(String acconumber, int money) {
+    public String withdraw(String acconumber, int money) {
         for (Account account : accos) {
             if(account.getNumber().equals(acconumber)) {
                 account.setBalance(-money);
             }
-            Transaction ta = new Transaction(money, "Card Payment",acconumber,"-");
+            Transaction ta = new Transaction(money, "Withdraw",acconumber,"-");
         }
-        System.out.println("Card payment succeeded");
-        return "Card payment succeeded";
+        System.out.println("Withdraw succeeded");
+        return "Withdraw succeeded";
     }
 
     public String printUserAccos(int userID){
@@ -163,11 +172,6 @@ public class Bank {
             System.out.println(u.getName());
         }
     }
-
-
-
-
-
 
 
 }

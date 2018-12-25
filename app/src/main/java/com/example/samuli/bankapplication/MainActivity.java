@@ -33,12 +33,10 @@ public class MainActivity extends AppCompatActivity {
     Button genBtn;
     String choice;
     Bank bk = new Bank();
-    User u;
     String acconumberInput;
-    String et;
+    String acconumberTo;
     int userIDMain;
     int money;
-
 
 
     @Override
@@ -49,29 +47,17 @@ public class MainActivity extends AppCompatActivity {
         func.add("Choose the function");
         func.add("Create an account");
         func.add("Deposit money");
-        func.add("Pay with card");
+        func.add("Withdraw money");
         func.add("Account transfer");
         SIbtn=(Button) findViewById(R.id.button);
         SObtn = (Button) findViewById(R.id.button2);
 
 
-
+        //initializing of main selection spinner
         chooseFunction = (Spinner) findViewById(R.id.chooseFunction);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, func);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chooseFunction.setAdapter(adapter);
-
-        accountSP = (Spinner) findViewById(R.id.accountSP);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, bk.getUserAccoNums(userIDMain));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accountSP.setAdapter(adapter1);
-
-        accoToSP = (Spinner) findViewById(R.id.accoToSP);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, bk.getUserAccoNums(userIDMain));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accountSP.setAdapter(adapter1);
-
-
 
 
         editText = (EditText) findViewById(R.id.editText);
@@ -83,13 +69,9 @@ public class MainActivity extends AppCompatActivity {
         genBtn = (Button) findViewById(R.id.generalBtn);
 
 
-
-
         etUserID=(EditText) findViewById(R.id.etUserID);
 
 
-        System.out.println("------------------Users---------------");
-        bk.printUsers();
 
         //Define functionality to Sign-in button
         SIbtn.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 try{
                     refreshBtn.setVisibility(View.VISIBLE);
                     userIDMain=new Integer(userIDStr).intValue();
+                    bk.setUser(userIDMain);
                     chooseFunction.setVisibility(View.VISIBLE);
                     currentUser.setText("Signed in with: "+bk.getUserName(userIDMain)+"\nUser ID:"+userIDMain);
                     SIbtn.setVisibility(View.INVISIBLE);
@@ -114,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //initializing of user accounts spinner
+        accountSP = (Spinner) findViewById(R.id.accountSP);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, bk.currentUser.userAccoNums);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accountSP.setAdapter(adapter1);
+
 
 
         SObtn.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Main options
+        //Main options, which includes different functionalities
         chooseFunction.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -162,11 +152,13 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 if(choice.equals("Deposit money")){
+                    genBtn.setVisibility(View.VISIBLE);
                     editText.setVisibility(View.VISIBLE);
                     editText.setHint("Money to deposit");
                     accountSP.setPrompt("Select account");
 
                     accoInfo.setText("");
+                    genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
 
                     accountSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -200,9 +192,14 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                 }
-                if (choice.equals("Pay with card")){
+                if (choice.equals("Withdraw money")){
+                    genBtn.setVisibility(View.VISIBLE);
                     accoInfo.setText("");
+                    genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
+                    genBtn.setText("Withdraw");
+                    editText.setVisibility(View.VISIBLE);
+                    editText.setHint("How much money you want to withdraw?");
 
                     accountSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -222,11 +219,25 @@ public class MainActivity extends AppCompatActivity {
                     }catch (NullPointerException e) {
                         System.out.println("Null pointer exception");
                     }
-                    genField.setText(bk.cardPayment(acconumberInput,money));
+
+                    genBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            genField.setText(bk.withdraw(acconumberInput,money));
+                        }
+                    });
+
                 }
                 if (choice.equals("Account transfer")){
+                    genBtn.setVisibility(View.VISIBLE);
                     accoInfo.setText("");
+                    genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
+                    textField.setVisibility(View.VISIBLE);
+                    textField.setHint("Type the account you want to transfer");
+                    genBtn.setText("Transfer");
+                    editText.setVisibility(View.VISIBLE);
+                    editText.setHint("How much money you want to transfer");
 
                     accountSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -247,9 +258,15 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Null pointer exception");
                     }
 
-                    bk.accountTransfer(acconumberInput,"0000", money);
+                    acconumberTo = textField.getText().toString();
+                    genBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            genField.setText(bk.accountTransfer(acconumberInput, acconumberTo, money));
+                        }
+                    });
+
                 }
-                //TODO tänne luotava vielä kortin luominen ja kortilla maksaminen
             }
 
             @Override

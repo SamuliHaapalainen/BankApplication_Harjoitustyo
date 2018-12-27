@@ -1,10 +1,12 @@
 package com.example.samuli.bankapplication;
 
 import java.util.ArrayList;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import android.util.Xml;
+
+
 
 public class Bank {
+
     //bank's list for all the accounts
     public ArrayList<Account> accos;
     //bank's list for all the users
@@ -16,7 +18,9 @@ public class Bank {
     String x;
     String y="Users accounts:\n";
     int i;
+    int balance;
     String s;
+    Account acc;
     public String acconumber;
     private static Bank bk = new Bank();
     public static Bank getInstance(){
@@ -26,25 +30,28 @@ public class Bank {
     //list for accoToSP spinner
     ArrayList accoNumsBank;
     //Initializing current user of a Bank
-    User currentUser=new User();
+    User currentUser;
+    TransactionLog taLog;
+
 
 
 
 
     public Bank() {
         accos = new ArrayList<Account>();
-        users =new ArrayList<User>();
+        users = new ArrayList<User>();
         userAccoNums = new ArrayList<String>();
-        accoNumsBank=new ArrayList<String>();
+        accoNumsBank = new ArrayList<String>();
+        taLog = new TransactionLog();
 
-        users.add(0,new User("Petri Pekkanen", "0500055550",9999999));
-        users.add(1,new User("Kalle Palander", "0455400054",9999998));
-        users.add(2,new User("Jorma Ollila", "0505556666",9999997));
-        users.add(3,new User("Jaska Jokunen", "0449987894",9999996));
+        users.add(0, new User("Petri Pekkanen", "0500055550", 9999999));
+        users.add(1, new User("Kalle Palander", "0455400054", 9999998));
+        users.add(2, new User("Jorma Ollila", "0505556666", 9999997));
+        users.add(3, new User("Jaska Jokunen", "0449987894", 9999996));
     }
 
     public void setUser(int id){
-        for(User u : bk.users){
+        for(User u : this.users){
             if (u.getId()==id){
                 this.currentUser = u;
             }
@@ -75,7 +82,7 @@ public class Bank {
             if (u.getId()==userID) {
                 u.userAccos.add(nacco);
                 u.userAccoNums.add(nacco.getNumber());
-                System.out.println("Tulostus getID:" + u.getId());
+                System.out.println("Tulostus ACCOUNTNUMBER:" + u.userAccoNums.get(0));
             }
         }return "Account created.\nAccountnumber is: " + nacco.getNumber()+" Money: "+nacco.getMoney();
     }
@@ -122,13 +129,24 @@ public class Bank {
         }
     }
 
+    public Account getAccount(String acconum){
+        for(Account a : accos){
+            if(a.getNumber().equals(acconum)){
+               this.acc = a;
+            }
+        }return acc;
+    }
+
     public String deposit(String acconumber, int money) {
         for (Account account : accos) {
             if(account.getNumber().equals(acconumber)) {
                 account.setBalance(money);
+                this.balance=account.getMoney();
             }
             Transaction ta = new Transaction(money, "Deposit", "-",acconumber);
             account.taList.add(ta);
+
+
         }
         System.out.println("Deposit succeeded");
         return "Deposit succeeded. "+money +" € deposited into account: "+acconumber;
@@ -144,18 +162,19 @@ public class Bank {
             account.taList.add(ta);
         }
         System.out.println("Money transfered "+money+"€ from "+acconumberFrom+"\nto "+acconumberTo);
-        return "Money transfered "+money+"€ from "+acconumberFrom+"\nto "+acconumberTo;
+        return "Money transfered "+money+" € from "+acconumberFrom+"\nto "+acconumberTo;
     }
 
     public String withdraw(String acconumber, int money) {
         for (Account account : accos) {
             if(account.getNumber().equals(acconumber)) {
                 account.setBalance(-money);
+                this.balance=account.getMoney();
             }
             Transaction ta = new Transaction(money, "Withdraw",acconumber,"-");
         }
         System.out.println("Withdraw succeeded");
-        return "Withdraw succeeded";
+        return "Withdraw succeeded, "+money+"€ withdrawn\nBalance: "+this.balance+" €";
     }
 
     public String printUserAccos(int userID){
@@ -166,6 +185,11 @@ public class Bank {
 
 
         }return s;
+    }
+
+    public void setVariablesXYnull(int userID){
+        x=null;
+        y="User accounts:\n";
     }
 
     public void printUsers(){

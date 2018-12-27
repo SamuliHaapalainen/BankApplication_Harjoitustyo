@@ -1,58 +1,59 @@
 package com.example.samuli.bankapplication;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import android.content.Context;
+import android.util.Xml;
+import android.view.View;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import java.util.ArrayList;
 
-public class TransactionLog {
-    public static final String xmlFilePath = "C:\\Users\\Samuli\\Documents\\Koulu\\Olio-ohjelmointi\\files\\xmlfile.xml";
-    public static void main(String argv[]){
+
+public class TransactionLog{
+    public static final String xmlFileName = "transactions.xml";
+
+    ArrayList<Transaction> transactions = new ArrayList<>();
+
+
+
+
+    public void writeToXMLFile(View view) {
+
+
+        XmlSerializer serializer = Xml.newSerializer();
+        StringWriter writer = new StringWriter();
         try{
-            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+            serializer.setOutput(writer);
+            serializer.startDocument("UTF-8",true);
+            serializer.startTag("","Transactions");
+            for(Transaction ta : transactions){
+                serializer.startTag("", "Money");
+                serializer.text(String.valueOf(ta.getMoney()));
+                serializer.endTag("", "Money");
 
-            Document document = documentBuilder.newDocument();
-            Element root = document.createElement("Transaction");
-            document.appendChild(root);
+                serializer.startTag("", "Transaction type");
+                serializer.text(String.valueOf(ta.getTransactionType()));
+                serializer.endTag("", "Transaction type");
 
-            Element money = document.createElement("Money");
-            root.appendChild(money);
+                serializer.startTag("", "Invoiced account");
+                serializer.text(String.valueOf(ta.getAccountFrom()));
+                serializer.endTag("", "Invoiced account");
 
-            Element transType = document.createElement("Tranaction type");
-            root.appendChild(transType);
+                serializer.startTag("", "Deposited account");
+                serializer.text(String.valueOf(ta.getAccountTo()));
+                serializer.endTag("", "Deposited account");
+            }
+            serializer.endTag("", "Transactions");
+            serializer.endDocument();
 
-            Element accoFrom = document.createElement("Invoiced account");
-            root.appendChild(accoFrom);
-
-            Element accoTo = document.createElement("Deposited account");
-            root.appendChild(accoFrom);
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-
-            DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(new File(xmlFilePath));
-
-            transformer.transform(domSource,streamResult);
-
-            System.out.println("XML file creation done successfully");
-
-        }catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        }catch(TransformerException tfe) {
-            tfe.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
 }
+
+

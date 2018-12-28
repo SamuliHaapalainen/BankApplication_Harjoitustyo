@@ -1,7 +1,5 @@
 package com.example.samuli.bankapplication;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,18 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
     String acconumberInput2;
     String acconumberTo;
     int userIDMain;
-    int money;
-    int moneyW;
+    Integer userIDtobeRemoved;
+    double money;
+    double moneyW;
     ArrayList<String> tempList = new ArrayList();
 
 
@@ -98,25 +88,34 @@ public class MainActivity extends AppCompatActivity {
                 bk.setVariablesXYnull(userIDMain);
                 genField.setText(bk.printUserAccos(userIDMain));
                 String userIDStr = etUserID.getText().toString();
-                refreshBtn.setVisibility(View.VISIBLE);
-                try{
-                    userIDMain=new Integer(userIDStr).intValue();
-                    bk.setUser(userIDMain); //setting the current user
+
+                try {
+                    userIDMain = new Integer(userIDStr).intValue();
+                    currentUser.setText(bk.setUser(userIDMain)); //setting the current user
                     adapter1.clear();
                     adapter1.addAll(bk.currentUser.userAccoNums);
-                    chooseFunction.setVisibility(View.VISIBLE);
-                    currentUser.setText("Signed in with: "+bk.getUserName(userIDMain)+"\nUser ID:"+userIDMain);
-                    SIbtn.setVisibility(View.INVISIBLE);
-                    SObtn.setVisibility(View.VISIBLE);
-                    System.out.println("/////////////////////////UserIdMain//////////// " +userIDMain);
-                    System.out.println("////////////////////////printUserAccos////////// "+bk.printUserAccos(userIDMain));
-                    try {
-                        genField.setText(bk.printUserAccos(userIDMain));
-                    }catch(NullPointerException n){
-                        System.out.println("Null pointer exception");}
-                }catch (NumberFormatException e){
-                    System.out.println("Number format exception");
-                }
+                    if (userIDMain == 987654321) {
+                        accountSP.setVisibility(View.VISIBLE);
+                        adapter1.clear();
+                        adapter1.addAll(bk.accoNumsBank);
+                        func.add("Remove account");
+                        func.add("Remove user");
+                        chooseFunction.setVisibility(View.VISIBLE);
+                    } else {
+                        refreshBtn.setVisibility(View.VISIBLE);
+                        chooseFunction.setVisibility(View.VISIBLE);
+                        //currentUser.setText("Signed in with: "+bk.getUserName(userIDMain)+"\nUser ID:"+userIDMain);
+                        SIbtn.setVisibility(View.INVISIBLE);
+                        SObtn.setVisibility(View.VISIBLE);}
+                        try {
+                            genField.setText(bk.printUserAccos(userIDMain));
+                        } catch (NullPointerException n) {
+                            System.out.println("Null pointer exception");
+                        }
+                    } catch(NumberFormatException e){
+                        System.out.println("Number format exception");
+                    }
+
             }
         });
 
@@ -130,17 +129,25 @@ public class MainActivity extends AppCompatActivity {
                 userIDMain=0;
                 SObtn.setVisibility(View.INVISIBLE);
                 SIbtn.setVisibility(View.VISIBLE);
+                accountSP.setVisibility(View.INVISIBLE);
+                genBtn.setVisibility(View.INVISIBLE);
+                editText.setVisibility(View.INVISIBLE);
+                refreshBtn.setVisibility(View.INVISIBLE);
+                textField.setVisibility(View.INVISIBLE);
                 currentUser.setText("Sign in by writing your userID");
                 chooseFunction.setVisibility(View.INVISIBLE);
                 genField.setVisibility(View.INVISIBLE);
+                func.remove("Remove account");
+                func.remove("Remove user");
             }
         });
 
-        //User can refresh the list of her/his accounts in general field
+        //User can refresh the list of her/his accounts in general field. Also general button comes visible if some reason it's disappeared
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bk.setVariablesXYnull(userIDMain);
+                genBtn.setVisibility(View.VISIBLE);
                 genField.setVisibility(View.VISIBLE);
                 genField.setText(bk.printUserAccos(userIDMain));
 
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //Main options, which includes different functionalities
+        //Main options, which includes different functions of application
         chooseFunction.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -168,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(choice.equals("Create an account")){
                     genField.setText("");
+                    genField.setVisibility(View.VISIBLE);
                     genBtn.setVisibility(View.VISIBLE);
                     genBtn.setText("Create new account");
                     refreshBtn.setVisibility(View.VISIBLE);
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View v) {
 
                             try {
-                                money = Integer.parseInt(editText.getText().toString());
+                                money = Double.parseDouble(editText.getText().toString());
                             }catch (NumberFormatException e){
                                 System.out.println("Number format exception");
                             }catch (NullPointerException e) {
@@ -235,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 if (choice.equals("Withdraw money")){
                     genBtn.setVisibility(View.VISIBLE);
                     accoInfo.setText("");
+                    accoInfo.setVisibility(View.VISIBLE);
                     genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
                     genBtn.setText("Withdraw");
@@ -260,13 +269,13 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             try {
-                                moneyW = Integer.parseInt(editText.getText().toString());
+                                moneyW = Double.parseDouble(editText.getText().toString());
                             }catch (NumberFormatException e){
                                 System.out.println("Number format exception");
                             }catch (NullPointerException e) {
                                 System.out.println("Null pointer exception");
                             }
-                            if(acconumberInput!=null) {
+                            if(acconumberInput2!=null) {
                                 accoInfo.setText(bk.withdraw(acconumberInput2, moneyW));
                             }else{accoInfo.setText("Transaction failed. Choose account again");}
                         }
@@ -276,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 if (choice.equals("Account transfer")) {
                     genBtn.setVisibility(View.VISIBLE);
                     accoInfo.setText("");
+                    accoInfo.setVisibility(View.VISIBLE);
                     genField.setText("");
                     accountSP.setVisibility(View.VISIBLE);
                     textField.setVisibility(View.VISIBLE);
@@ -301,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             acconumberTo = textField.getText().toString();
                             try {
-                                money = Integer.parseInt(editText.getText().toString());
+                                money = Double.parseDouble(editText.getText().toString());
                             } catch (NumberFormatException e) {
                                 System.out.println("Number format exception");
                             } catch (NullPointerException e) {
@@ -309,11 +319,76 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if (acconumberInput != null) {
                                 accoInfo.setText(bk.accountTransfer(acconumberInput, acconumberTo, money));
+                                genField.setText("Balance: " + bk.getAccount(acconumberInput).getMoney() + " €");
                             } else {
                                 accoInfo.setText("Transaction failed. Choose account again");
                             }
                         }
                     });
+                }
+                if(choice.equals("Remove account")){
+                    genBtn.setVisibility(View.VISIBLE);
+                    genBtn.setText("Remove");
+                    refreshBtn.setVisibility(View.INVISIBLE);
+                    genField.setVisibility(View.INVISIBLE);
+                    textField.setVisibility(View.INVISIBLE);
+                    accoInfo.setText("");
+                    accoInfo.setVisibility(View.VISIBLE);
+                    accountSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            acconumberInput=parent.getItemAtPosition(position).toString();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    genBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            accoInfo.setText(bk.removeAcco(acconumberInput));
+                            adapter1.clear();
+                            adapter1.addAll(bk.accoNumsBank);
+                        }
+                    });
+
+                }
+                if(choice.equals("Remove user")) {
+                    genBtn.setVisibility(View.VISIBLE);
+                    genBtn.setText("Remove");
+                    refreshBtn.setVisibility(View.INVISIBLE);
+                    genField.setVisibility(View.INVISIBLE);
+                    textField.setVisibility(View.INVISIBLE);
+                    accoInfo.setText("");
+                    accoInfo.setVisibility(View.VISIBLE);
+                    adapter1.clear();
+                    adapter1.addAll(bk.userIdlist);
+                    accountSP.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            try {
+                                userIDtobeRemoved = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                            } catch(NumberFormatException e){
+                                System.out.println("Numberformatexception");
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    genBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            accoInfo.setText(bk.removeUser(userIDtobeRemoved));
+                            adapter1.clear();
+                            adapter1.addAll(bk.userIdlist);
+                        }
+                    });
+
                 }
                 }
             @Override

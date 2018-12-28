@@ -3,19 +3,19 @@ package com.example.samuli.bankapplication;
 import java.util.ArrayList;
 
 public class Transaction {
-    int money;
+    double money;
     String transactionType;
     String accountFrom;
     String accountTo;
 
-    public Transaction(int m, String transType, String accFrom, String accTo){
+    public Transaction(double m, String transType, String accFrom, String accTo){
         money=m;
         transactionType=transType;
         accountFrom= accFrom;
         accountTo=accTo;
     }
 
-    public int getMoney(){
+    public double getMoney(){
         return money;
     }
 

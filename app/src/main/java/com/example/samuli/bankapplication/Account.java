@@ -5,14 +5,14 @@ import java.util.ArrayList;
 
 public abstract class Account {
     public String acconumber;
-    public int money;
+    public double money;
     public int userID;
     public int seq = 88888888;
     //Here is list for transactions:
     ArrayList <Transaction> taList = new ArrayList<>();
 
 
-    public Account(int ID, int a) {
+    public Account(int ID, double a) {
         acconumber="FI"+seq;
         seq=-1;
         money = a;
@@ -25,13 +25,13 @@ public abstract class Account {
         return acconumber;
     }
 
-    public int getMoney(){ return this.money; }
+    public double getMoney(){ return this.money; }
 
     public void print() {
         System.out.println("Account number: " + acconumber + " Money: " + money);
     }
 
-    public void setBalance(int z) {
+    public void setBalance(double z) {
         if(money + z > 0) {
             money += z;
         }
@@ -46,15 +46,15 @@ public abstract class Account {
 
 class NormalAccount extends Account {
 
-    public NormalAccount(int userID,  int money) {
+    public NormalAccount(int userID,  double money) {
         super(userID, money);
     }
 }
 
 class CreditAccount extends Account {
-    private int credit;
+    private double credit;
 
-    public CreditAccount(int userID, String acconumber, int money, int c) {
+    public CreditAccount(int userID, String acconumber, double money, double c) {
         super(userID, money);
         this.credit = c;
     }
@@ -63,7 +63,7 @@ class CreditAccount extends Account {
         System.out.println("Accountnumber: " + acconumber + " Money: " + money + " Credit limit: " + credit);
     }
 
-    public void setBalance(int x) {
+    public void setBalance(double x) {
         if(money + x > -credit) {
             money += x;
         }

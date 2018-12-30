@@ -63,6 +63,10 @@ class CreditAccount extends Account {
         System.out.println("Accountnumber: " + acconumber + " Money: " + money + " Credit limit: " + credit);
     }
 
+    public void setCredit(double credit) {
+        this.credit = credit;
+    }
+
     public void setBalance(double x) {
         if(money + x > -credit) {
             money += x;

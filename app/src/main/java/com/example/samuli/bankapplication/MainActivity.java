@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 bk.setVariablesXYnull(userIDMain);
                 genField.setText(bk.printUserAccos(userIDMain));
                 String userIDStr = etUserID.getText().toString();
+                accoInfo.setText("");
 
                 try {
                     userIDMain = new Integer(userIDStr).intValue();
@@ -101,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
                         func.add("Remove account");
                         func.add("Remove user");
                         chooseFunction.setVisibility(View.VISIBLE);
+                        SIbtn.setVisibility(View.INVISIBLE);
+                        SObtn.setVisibility(View.VISIBLE);
                     } else {
                         refreshBtn.setVisibility(View.VISIBLE);
                         chooseFunction.setVisibility(View.VISIBLE);

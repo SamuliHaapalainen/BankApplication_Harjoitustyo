@@ -11,6 +11,7 @@ public class User {
     protected String phonenumber;
     public int id;
     public ArrayList<String> userAccoNums = new ArrayList<String>();
+    int adminID;
 
     public User() {
         userAccos = new ArrayList<>();
@@ -23,6 +24,7 @@ public class User {
         phonenumber = phone;
         id = userID;
     }
+
 
     public void setName(String n) {
         name = n;
@@ -44,6 +46,10 @@ public class User {
 
     public int getId() {
         return this.id;
+    }
+
+    public void setId(int id){
+        this.id=id;
     }
 
     public ArrayList getAccounts() {
